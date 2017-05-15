@@ -12,15 +12,18 @@ library(lubridate)
 
 # READ ORIGINAL DATA
 train <- read.csv2("training_data.csv", sep = ",", header = T)
+train <- train[!is.na(train$BIRTH_YEAR),]
+
+
 
 N <- dim(train)[1]
 p <- dim(train)[2]
 
 # TURN SHITTY DATE FACTOR INTO YEAR; MONTH; DAY; WEEKDAY
 day_vec <- rep(0,N)
-month_vec<- day_vec
-year_vec <- day_vec
-wday_vec <- day_vec
+month_vec<- rep(0,N)
+year_vec <- rep(0,N)
+wday_vec <- rep(0,N)
 
 for (i in 1:N){
   datetxt <- as.character(train$DATE[i])
@@ -35,45 +38,12 @@ train$DAY <- day_vec
 train$MONTH <- month_vec
 train$YEAR <- year_vec
 train$WDAY <- wday_vec
+train$WKND <- 1 - (train$WDAY > 1) * (train$WDAY < 7)
+
+train$FOREIGN <- train$MRCH_CTRY != "SE"
 
 #REMOVE SHITTY DATE; COUNTRY (~98% SE) AND ONE TOT CORR FACTOR
 train <- train[,-c(2, 5, 9)]
 # PERMUTE TO MOVE CLASS LAST 
-train <- train[,c(1:6,8,9,10,11,7)]
+train <- train[,c(1:6,8:13,7)]
 
-#REMOVE NA
-train <- train[!is.na(train$BIRTH_YEAR),]
-
-write.table(train, file = "train_clean.csv", sep=" ")
-
-
-counts <- count(train$KEYWORD)
-rel_counts <-counts$freq / N
-par(las=2)
-plot(counts$x, rel_counts)
-
-na_train <- train[!is.na(train$BIRTH_YEAR),]
-na_counts <- count(na_train$KEYWORD)
-na_rel_counts <-na_counts$freq / N
-par(las=2)
-plot(na_counts$x, na_rel_counts)
-
-
-# RELATIVE COUNTS
-counts$freq[counts$x == "grocery_store"] / sum(counts$freq)
-
-names(train)
-
-library(corrplot)
-cor(t(as.factor(train)))
-train_f <- as.factor(train)
-
-n <- 2
-samp_ind <- sample(x = seq(1 : N) , size = n, replace = F)
-sub_train <- as.numeric(na_train[samp_ind,])
-
-lda( sub_train[,10] ~ ., data = sub_train)
-
-
-  fit <- train(KEYWORD ~ ., data=trainSet[trainInd, ], method="knn",tuneLength=15,trControl=ctrl)
-  pp <- predict(fit, newdata=gener[-trainInd, -4], type="raw")
