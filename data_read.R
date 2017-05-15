@@ -45,6 +45,10 @@ train$FOREIGN <- train$MRCH_CTRY != "SE"
 dec_vec = as.factor(as.numeric(train$TRANS_AMO%%1==0)+1)
 train$DEC = dec_vec
 
+# END_9
+end_vec <- train$TRANS_AMO %% 10 == 9
+train$END9 <- end_vec
+
 
 #REMOVE SHITTY DATE; COUNTRY (~98% SE) AND ONE TOT CORR FACTOR
 train <- train[,-c(2, 5, 9)]
