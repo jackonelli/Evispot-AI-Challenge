@@ -38,7 +38,7 @@ train$DAY <- day_vec
 train$MONTH <- month_vec
 train$YEAR <- year_vec
 train$WDAY <- wday_vec
-train$WKND <- 1 - (train$WDAY > 1) * (train$WDAY < 7)
+train$WKND <- (train$WDAY == 1) | (train$WDAY == 7)
 
 train$FOREIGN <- train$MRCH_CTRY != "SE"
 
