@@ -1,4 +1,4 @@
-setwd("~/EZW")
+setwd('~/dev/evispot/Evispot-AI-Challenge')
 library(randomForest)
 library(xtable)
 library(plot3D)
@@ -13,8 +13,6 @@ library(lubridate)
 # READ ORIGINAL DATA
 train <- read.csv2("training_data.csv", sep = ",", header = T)
 train <- train[!is.na(train$BIRTH_YEAR),]
-
-
 
 N <- dim(train)[1]
 p <- dim(train)[2]
@@ -40,10 +38,20 @@ train$YEAR <- year_vec
 train$WDAY <- wday_vec
 train$WKND <- (train$WDAY == 1) | (train$WDAY == 7)
 
+# FOREIGN / ABROAD
 train$FOREIGN <- train$MRCH_CTRY != "SE"
+
+# OREN
+dec_vec = as.factor(as.numeric(train$TRANS_AMO%%1==0)+1)
+train$DEC = dec_vec
+
 
 #REMOVE SHITTY DATE; COUNTRY (~98% SE) AND ONE TOT CORR FACTOR
 train <- train[,-c(2, 5, 9)]
-# PERMUTE TO MOVE CLASS LAST 
-train <- train[,c(1:6,8:13,7)]
 
+# PERMUTE TO MOVE CLASS LAST 
+train <- train[,c(1:6,8:14,7)]
+train = droplevels(train)
+
+#REMOVE NA
+train <- train[!is.na(train$BIRTH_YEAR),]
