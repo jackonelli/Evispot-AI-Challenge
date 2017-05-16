@@ -11,7 +11,7 @@ library(MASS)
 library(lubridate)
 
 # READ ORIGINAL DATA
-train <- read.csv2("training_data.csv", sep = ",", header = T)
+train_raw <- read.csv2("training_data.csv", sep = ",", header = T)
 
 N <- dim(train)[1]
 p <- dim(train)[2]
@@ -56,8 +56,6 @@ train <- train[,-c(2, 5, 9)]
 train <- train[,c(1:6,8:15,7)]
 train = droplevels(train)
 
-#REMOVE NA
-train <- train[!is.na(train$BIRTH_YEAR),]
 
 #############################################################
 # TEST DATA:
@@ -106,11 +104,6 @@ test <- test[,-c(2, 5, 9)]
 # PERMUTE TO MOVE CLASS LAST 
 test <- test[,c(1:6,8:16,7)]
 test = droplevels(test)
-
-#REMOVE NA
-test <- test[!is.na(test$BIRTH_YEAR),]
-
-
 
 
 
