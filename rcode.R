@@ -38,6 +38,7 @@ y.train = subTrain.train[,magic_label]
 x.test = subTrain.test[,-magic_label]
 y.test = subTrain.test[,magic_label]
 
+
 # Just set deciding on decimal value or not
 #shitface = y.test
 #shitfaceIND = x.test$DEC=="1"
